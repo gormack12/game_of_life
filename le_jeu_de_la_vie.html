@@ -38,7 +38,7 @@
 	</style>
 </head>
 <body>
-	<div class="app">
+	<div class="container-fluid">
 		<div class="row">
 			<div class="col-md-12">
 				<button id="start" class="btn btn-default" onclick="start();toggle_control_btn();"><i class="glyphicon glyphicon-play"></i></button>
@@ -63,11 +63,11 @@
   		var tblBody = document.createElement("tbody");
  
   		// creating all cells
-  		for (var i = 0; i < 200; i++) {
+  		for (var i = 0; i < 150; i++) {
     	// creates a table row
     		var row = document.createElement("tr");
  
-   			for (var j = 0; j < 300; j++) {
+   			for (var j = 0; j < 180; j++) {
    				// Create a <td> element and a text node, make the text
    				// node the contents of the <td>, and put the <td> at
    				// the end of the table row
@@ -140,6 +140,8 @@
 									if (table.rows[y + v].cells[x + h].classList.contains("alive"))
 									{
 										livingCells++;
+										if (livingCells == 4)
+											continue;
 									}
 								}
 							}
