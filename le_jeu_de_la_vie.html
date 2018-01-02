@@ -1,0 +1,205 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<title>Le jeu de la vie </title>
+
+	<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
+
+	<!-- jQuery library -->
+	<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
+
+	<!-- Latest compiled JavaScript -->
+	<script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
+	
+	<style type="text/css">
+		tr {
+			/*background-color: black;*/
+		}
+		td {
+			border:	1px solid #333;
+			min-width: 8px;
+			width: 8px;
+			min-height: 8px;
+			height: 8px;
+			/*border-radius: 50%;*/
+		}
+
+		.alive {
+			background-color: green;
+		}
+
+		.dying {
+			/*background-color: red;*/
+		}
+
+		.birth {
+			/*background-color: green;*/
+		}
+	</style>
+</head>
+<body>
+	<div class="app">
+		<div class="row">
+			<div class="col-md-12">
+				<button id="start" class="btn btn-default" onclick="start();toggle_control_btn();"><i class="glyphicon glyphicon-play"></i></button>
+				<button id="pause" class="btn btn-default btn" onclick="pause();toggle_control_btn();" style="display: none;"><i class="glyphicon glyphicon-pause"></i></button>
+				<span class="" id="gen"></span>
+			</div>
+
+			<div id="wirerack" class="col-md-12">
+
+			</div>
+		</div>
+	</div>
+
+	<script type="text/javascript">
+
+		// function generate_table() {
+  		// get the reference for the body
+  		var wirerack = document.getElementById("wirerack");
+ 	
+ 		// creates a <table> element and a <tbody> element
+  		var tbl = document.createElement("table");
+  		var tblBody = document.createElement("tbody");
+ 
+  		// creating all cells
+  		for (var i = 0; i < 200; i++) {
+    	// creates a table row
+    		var row = document.createElement("tr");
+ 
+   			for (var j = 0; j < 300; j++) {
+   				// Create a <td> element and a text node, make the text
+   				// node the contents of the <td>, and put the <td> at
+   				// the end of the table row
+   				var cell = document.createElement("td");
+
+   				cell.onclick = function()
+   				{
+   					this.classList.toggle("alive");
+   				}
+
+   				row.appendChild(cell);
+   			}
+ 
+   			// add the row to the end of the table body
+   			tblBody.appendChild(row);
+ 		}
+ 
+ 		// put the <tbody> in the <table>
+ 		tbl.appendChild(tblBody);
+ 		// appends <table> into <body>
+ 		wirerack.appendChild(tbl);
+ 		// sets the border attribute of tbl to 2;
+ 		// tbl.setAttribute("border", "2");
+		// }
+
+		var table = document.getElementsByTagName("table")[0];
+		var cells = table.getElementsByTagName("td");
+		var start_id;
+		var number_of_generation = 0;
+
+		function start ()
+		{
+			start_id = setInterval(function() {
+				next();
+				number_of_generation++;
+				if (number_of_generation > 1)
+					document.getElementById("gen").innerHTML = number_of_generation + " générations";
+				else
+					document.getElementById("gen").innerHTML = number_of_generation + " génération";
+			}, 300);
+
+		}
+
+		function pause()
+		{
+			clearInterval(start_id);
+		}
+
+		function next()
+		{
+			for (var i = 0; i < cells.length; i++)
+			{
+				var livingCells = 0;
+
+				x = cells[i].cellIndex;
+				y = cells[i].parentNode.rowIndex;
+
+				for (var v = -1; v < 2; v++)
+				{
+					for (var h = -1; h < 2; h++)
+					{
+						if (h == 0 && v == 0)
+							continue;
+						else
+						{
+							if (table.rows[y + v] != undefined)
+							{
+								if (table.rows[y + v].cells[x + h] != undefined)
+								{
+									if (table.rows[y + v].cells[x + h].classList.contains("alive"))
+									{
+										livingCells++;
+									}
+								}
+							}
+							else
+							{
+								continue;
+							}
+						}
+					}
+				}
+
+				if (cells[i].classList.contains("alive") == false)
+				{
+					if (livingCells == 3 )
+					{
+						cells[i].classList.add("birth");
+						// console.log("cell " + i + " has " + livingCells + " neighbour");
+					}
+				}
+				else
+				{
+					if (livingCells > 3 || livingCells < 2)
+					{
+						cells[i].classList.add("dying");
+						// console.log("cell " + i + " has " + livingCells + " neighbour");
+					}
+				}
+			}
+
+			for (var i = 0; i < cells.length; i++)
+			{
+				if (cells[i].classList.contains("alive") && cells[i].classList.contains("dying"))
+				{
+					cells[i].classList.remove("alive");
+					cells[i].classList.remove("dying");
+				}
+				if (cells[i].classList.contains("birth"))
+				{
+					cells[i].classList.add("alive");
+					cells[i].classList.remove("birth");
+				}
+			}
+		}
+
+		function toggle_control_btn()
+		{
+			var start_btn = document.getElementById("start");
+			var pause_btn = document.getElementById("pause");
+
+			if (start_btn.style.display == "none")
+			{
+				pause_btn.style.display = "none";
+				start_btn.style.display = "";
+			}
+			else
+			{
+				start_btn.style.display = "none";
+				pause_btn.style.display = "";
+			}
+		}
+	</script>
+</body>
+</html>
